@@ -7,7 +7,7 @@ runs:
     - name: cache depend
       run: |
         echo "checking for hardcoded AWS keys in the git diff"
-        if git diff --cached | grep -E 'AKIA[0-9A-Z]{16}' then
+        if git diff --cached | grep -E 'AKIA[0-9A-Z]{16}'; then
           echo "Found possible AWS key"
           exit 1
         else
