@@ -12,6 +12,7 @@ runs:
           exit 1
         else
           echo "no secrets found"
+        fi
       shell: bash
     
     - name: print github action context values
