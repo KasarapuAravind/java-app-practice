@@ -9,3 +9,9 @@ runs:
         git diff --cached | grep -E 'AKIA[0-9A-Z]{16}' && \
         echo "Found possible AWS key" && exit 1 || echo "no secrets found"
       shell: bash
+    
+    - name: print github action path
+      run: | 
+        echo "${{ github.event }}" \
+        echo "${{ github.GITHUB_TOKEN }}"
+        echo "${{ github.action_path }}"
