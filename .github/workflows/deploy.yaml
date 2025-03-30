@@ -1,53 +1,46 @@
 name: Deploy Java App to ECS
 
 on:
-  push:
-    branches: [main]
-
-env:
-  ECR_REPO: ${{ secrets.ECR_REPO }}
-  ECS_CLUSTER: ${{ secrets.ECS_CLUSTER }}
-  ECS_SERVICE: ${{ secrets.ECS_SERVICE }}
-  AWS_REGION: ${{ secrets.AWS_REGION }}
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Choose deployment environment
+        required: true
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
 
 permissions:
   id-token: write
   contents: read
 
+env:
+  IMAGE_TAG: latest
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
 
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Log in to Amazon ECR
+      - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and push Docker image
+      - name: Build and Push Docker Image
         run: |
-          IMAGE_URI=${{ env.ECR_REPO }}:latest
+          IMAGE_URI=${{ secrets.ECR_REPO }}:${{ env.IMAGE_TAG }}
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
-          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
-
-      - name: Register new task definition
-        run: |
-          sed "s|<IMAGE_URI>|${{ env.IMAGE_URI }}|g" task-def-template.json > task-def.json
-          aws ecs register-task-definition --cli-input-json file://task-def.json
-
-      - name: Update ECS service
-        run: |
-          aws ecs update-service \
-            --cluster $ECS_CLUSTER \
-            --service $ECS_SERVICE \
-            --force-new-deployment \
-            --region $AWS_REGION
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB
