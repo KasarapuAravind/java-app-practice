@@ -1,0 +1,13 @@
+name: testing the custom actions
+
+on:
+  workflow_dispatch:
+
+jobs:
+  testing-action:
+    name: testing action
+    runs-on: ubuntu-latest
+    steps:
+      - name: checking aws keys in cache
+        uses: ../actions/cache-depend
+        

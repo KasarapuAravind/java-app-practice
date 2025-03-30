@@ -1,0 +1,11 @@
+name: cache dependencies
+description: this action is for caching dependencies
+
+runs:
+  using: "composite"
+  steps:
+    - name: cache depend
+      run: |
+        git diff --cached | grep -E 'AKIA[0-9A-Z]{16}' && \
+        echo "Found possible AWS key" && exit 1 || echo "no secrets found"
+      shell: bash
