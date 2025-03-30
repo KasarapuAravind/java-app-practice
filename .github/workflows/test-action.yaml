@@ -9,5 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checking aws keys in cache
-        uses: ../actions/cache-depend
-        
+        uses: ./.github/actions/cache-depend
