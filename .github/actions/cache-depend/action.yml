@@ -15,3 +15,4 @@ runs:
         echo "${{ github.event }}" \
         echo "${{ github.GITHUB_TOKEN }}"
         echo "${{ github.action_path }}"
+      shell: bash
