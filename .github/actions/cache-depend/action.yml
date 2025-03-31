@@ -19,7 +19,7 @@ runs:
       run: | 
         echo "Event: ${{ toJson(github.event)  }}"
         echo "Action path: ${{ github.action_path }}"
-        echo "APP_ENV=dev" >> $GITHUV_ENV
+        echo "APP_ENV=dev" >> $GITHUB_ENV
       shell: bash
 
     - name: test executing script from script file
