@@ -28,7 +28,7 @@ jobs:
           environment: ${{ github.event.inputs.environment }}
       
       - name: conditional step
-        if: steps.env_check.outputs.is_dev == "true"
+        if: steps.env_check.outputs.is_dev == 'true'
         run: echo "running dev only step"
 
       
