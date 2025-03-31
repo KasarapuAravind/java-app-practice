@@ -1,0 +1,27 @@
+name: Environment checker
+
+inputs:
+  environment:
+    required: true
+
+outputs:
+  is_dev: 
+    description: "whether environment is dev"
+    value: ${{ steps.env_check.outputs.is_dev }}
+
+env:
+  $ENV_NAME: ${{ inputs.environment }}
+
+
+runs:
+  using: composite
+  steps:
+    - name: validate environment
+      id: env_check
+      run: |
+        if $ENV_NAME == "dev"; then
+          echo "is_dev=true" >> $GITHUB_OUTPUT
+        else
+          echo "is_dev=false" >> $GITHUB_OUTPUT
+        fi
+      shell: bash
