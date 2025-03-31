@@ -17,7 +17,7 @@ runs:
     
     - name: print github action context values
       run: | 
-        echo "Event: ${{ toJson(github.event)  }}"
+        #echo "Event: ${{ toJson(github.event)  }}"
         echo "Action path: ${{ github.action_path }}"
         echo "APP_ENV=dev" >> $GITHUB_ENV
       shell: bash
