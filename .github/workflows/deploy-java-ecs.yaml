@@ -1,0 +1,49 @@
+name: Build & Deploy to ECS
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - test
+          - prod
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: 17
+
+      - name: Build WAR file
+        run: mvn clean package
+
+      - name: Build & Push Docker Image
+        uses: ./actions/docker-build-push
+        with:
+          environment: ${{ github.event.inputs.environment }}
+          image_tag: ${{ github.sha }}
+
+      - name: Deploy to ECS
+        uses: ./actions/ecs-deploy
+        with:
+          cluster_name: ${{ github.event.inputs.environment }}-cluster
+          service_name: ${{ github.event.inputs.environment }}-app-service
+          image_tag: ${{ github.sha }}

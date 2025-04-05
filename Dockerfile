@@ -1,5 +1,2 @@
-FROM openjdk:17-alpine
-COPY app/WebServer.java /app/WebServer.java
-WORKDIR /app
-RUN javac WebServer.java
-CMD ["java", "WebServer"]
+FROM tomcat:9.0
+COPY target/webapp.war /usr/local/tomcat/webapps/
