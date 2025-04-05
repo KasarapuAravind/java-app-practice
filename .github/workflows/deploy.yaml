@@ -1,4 +1,4 @@
-name: Deploy Java App to ECS
+name: Deploy
 
 on:
   workflow_dispatch:

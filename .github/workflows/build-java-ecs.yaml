@@ -1,4 +1,4 @@
-name: Build Java App
+name: Build Java App to ECS
 
 on:
   push:
