@@ -1,0 +1,19 @@
+name: "Build and Push Docker Image"
+inputs:
+  environment:
+    required: true
+  image_tag:
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        REPO_NAME="${{ inputs.environment }}-app-repo"
+        AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        ECR_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/${REPO_NAME}"
+
+        aws ecr get-login-password --region ${{ env.AWS_REGION }} | \
+        docker login --username AWS --password-stdin $ECR_URI
+
+        docker build -t $ECR_URI:${{ inputs.image_tag }} .
+        docker push $ECR_URI:${{ inputs.image_tag }}
